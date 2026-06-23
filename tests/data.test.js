@@ -44,9 +44,9 @@ describe('数据完整性', () => {
     // 构建题目文件列表（支持分册）
     function getQuestionFiles(id) {
       if (id === 'xs' || id === 'mg') {
-        return [`questions/${id}_1.json`, `questions/${id}_2.json`, `questions/${id}_3.json`];
+        return [1,2,3,4,5,6].map(i => `questions/${id}_${i}.json`);
       }
-      return [`questions/${id}.json`];
+      return [`questions/${id}.json`, `questions/${id}_2.json`];
     }
 
     function loadAllQuestions(id) {

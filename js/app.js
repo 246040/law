@@ -67,13 +67,13 @@ async function init() {
     const subjectIds = appData.subjects.map(s => s.id);
     const questionFiles = [];
     for (const id of subjectIds) {
-      // 刑法和民法有上中下三册
       if (id === 'xs' || id === 'mg') {
-        questionFiles.push(`./data/questions/${id}_1.json`);
-        questionFiles.push(`./data/questions/${id}_2.json`);
-        questionFiles.push(`./data/questions/${id}_3.json`);
+        // 刑法和民法有6册
+        for (let i = 1; i <= 6; i++) questionFiles.push(`./data/questions/${id}_${i}.json`);
       } else {
+        // 其他学科：基础文件 + 扩展卷
         questionFiles.push(`./data/questions/${id}.json`);
+        questionFiles.push(`./data/questions/${id}_2.json`);
       }
     }
     const questionResults = await Promise.all(questionFiles.map(f => loadJSON(f).catch(() => [])));
