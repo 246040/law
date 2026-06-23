@@ -33,30 +33,53 @@ let appData = { subjects: [], questions: [], flashcards: [], knowledge: {}, laws
 
 // ---- 初始化 ----
 async function init() {
-  // 加载数据
-  const [subjectsData, flashcardsData, knowledgeData, lawsData] = await Promise.all([
-    loadJSON('./data/subjects.json'),
-    loadJSON('./data/flashcards.json'),
-    loadJSON('./data/knowledge.json'),
-    loadJSON('./data/laws.json'),
-  ]);
+  try {
+    // 加载数据
+    const [subjectsData, flashcardsData, knowledgeData, lawsData] = await Promise.all([
+      loadJSON('./data/subjects.json'),
+      loadJSON('./data/flashcards.json'),
+      loadJSON('./data/knowledge.json'),
+      loadJSON('./data/laws.json'),
+    ]);
 
-  appData.subjects = subjectsData || [];
-  appData.flashcards = flashcardsData || [];
-  appData.knowledge = knowledgeData || {};
-  appData.laws = lawsData || [];
+    appData.subjects = subjectsData || [];
+    appData.flashcards = flashcardsData || [];
+    appData.knowledge = knowledgeData || {};
+    appData.laws = lawsData || [];
 
-  // 加载所有题目（按学科文件）
-  const subjectIds = appData.subjects.map(s => s.id);
-  const questionPromises = subjectIds.map(id => loadJSON(`./data/questions/${id}.json`));
-  const questionResults = await Promise.all(questionPromises);
-  appData.questions = questionResults.flat().filter(Boolean);
+    // 加载所有题目（按学科文件）
+    const subjectIds = appData.subjects.map(s => s.id);
+    const questionPromises = subjectIds.map(id => loadJSON(`./data/questions/${id}.json`));
+    const questionResults = await Promise.all(questionPromises);
+    appData.questions = questionResults.flat().filter(Boolean);
 
-  // 绑定导航
-  bindNavigation();
+    // 数据加载失败检查
+    if (appData.subjects.length === 0) {
+      throw new Error('subjects.json 加载为空');
+    }
 
-  // 渲染初始页面
-  switchPage('dashboard');
+    // 绑定导航
+    bindNavigation();
+
+    // 渲染初始页面
+    switchPage('dashboard');
+  } catch (err) {
+    console.error('[法考通] 数据加载失败:', err);
+    const container = $('#pageContent');
+    if (container) {
+      container.innerHTML = `
+        <div class="empty-state" style="margin-top:80px;">
+          <div class="empty-state-icon" style="color:var(--accent-red);">&#9888;</div>
+          <h3>数据加载失败</h3>
+          <p style="max-width:400px;margin:12px auto;line-height:1.8;">
+            如果你是直接打开 HTML 文件，请改用 HTTP 服务器访问：<br>
+            <code style="background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:4px;">npx serve .</code><br>
+            或直接访问在线版：<br>
+            <a href="https://246040.github.io/law/" style="color:var(--accent-gold);">https://246040.github.io/law/</a>
+          </p>
+        </div>`;
+    }
+  }
 }
 
 // ---- 导航 ----
