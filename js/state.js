@@ -9,6 +9,7 @@ const DEFAULT_STATE = {
   mistakes: [],
   cardStatus: {},
   subjectProgress: {},
+  dailyLog: {},  // { 'YYYY-MM-DD': { answered: N, correct: N } }
 };
 
 export class Store {

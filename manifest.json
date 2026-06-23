@@ -1,0 +1,19 @@
+{
+  "name": "法考通",
+  "short_name": "法考通",
+  "description": "法律职业资格考试智能备考系统",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f1a",
+  "theme_color": "#d4a84b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230b0f1a'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='%23d4a84b'>⚖️</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["education"],
+  "lang": "zh-CN"
+}

@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>法考通 · 法律职业资格考试备考助手</title>
   <meta name="description" content="法考通是一个面向法律职业资格考试（法考）的在线备考工具，提供刷题、速记卡片、错题本、知识体系等功能。">
+  <meta name="theme-color" content="#d4a84b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.loli.net" crossorigin>
   <link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Noto+Serif+SC:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
@@ -56,8 +60,8 @@
         </div>
       </nav>
       <div class="sidebar-footer">
-        <p>法考通 v2.0</p>
-        <p>模块化架构 · 持续迭代</p>
+        <p>法考通 v3.0</p>
+        <p>SM-2 · 可视化 · PWA · 快捷键</p>
       </div>
     </aside>
 
@@ -79,5 +83,17 @@
   </div>
 
   <script type="module" src="js/app.js"></script>
+  <script>
+    // PWA Service Worker 注册
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(reg => {
+          console.log('[PWA] SW registered, scope:', reg.scope);
+        }).catch(err => {
+          console.warn('[PWA] SW registration failed:', err);
+        });
+      });
+    }
+  </script>
 </body>
 </html>

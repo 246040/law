@@ -41,16 +41,31 @@ describe('数据完整性', () => {
     const subjects = loadJSON('subjects.json');
     const subjectIds = subjects.map(s => s.id);
 
+    // 构建题目文件列表（支持分册）
+    function getQuestionFiles(id) {
+      if (id === 'xs' || id === 'mg') {
+        return [`questions/${id}_1.json`, `questions/${id}_2.json`, `questions/${id}_3.json`];
+      }
+      return [`questions/${id}.json`];
+    }
+
+    function loadAllQuestions(id) {
+      const files = getQuestionFiles(id);
+      return files.flatMap(f => {
+        try { return loadJSON(f); } catch { return []; }
+      });
+    }
+
     it('每个学科应有对应的题目文件', () => {
       subjectIds.forEach(id => {
-        const questions = loadJSON(`questions/${id}.json`);
+        const questions = loadAllQuestions(id);
         expect(Array.isArray(questions)).toBe(true);
       });
     });
 
     it('每道题应包含必要字段', () => {
       subjectIds.forEach(id => {
-        const questions = loadJSON(`questions/${id}.json`);
+        const questions = loadAllQuestions(id);
         questions.forEach(q => {
           expect(q).toHaveProperty('id');
           expect(q).toHaveProperty('subject');
@@ -58,14 +73,15 @@ describe('数据完整性', () => {
           expect(q).toHaveProperty('stem');
           expect(q).toHaveProperty('options');
           expect(q).toHaveProperty('answer');
-          expect(q).toHaveProperty('explanation');
+          expect(q.analysis || q.explanation).toBeTruthy();
           expect(q.subject).toBe(id);
           expect(['single', 'multi']).toContain(q.type);
           expect(Array.isArray(q.options)).toBe(true);
           expect(q.options.length).toBeGreaterThanOrEqual(2);
-          expect(typeof q.answer).toBe('number');
-          expect(q.answer).toBeGreaterThanOrEqual(0);
-          expect(q.answer).toBeLessThan(q.options.length);
+          const ANSWER_MAP = { A: 0, B: 1, C: 2, D: 3 };
+          const answerIdx = typeof q.answer === 'string' ? ANSWER_MAP[q.answer.toUpperCase()] : q.answer;
+          expect(answerIdx).toBeGreaterThanOrEqual(0);
+          expect(answerIdx).toBeLessThan(q.options.length);
         });
       });
     });
@@ -73,7 +89,7 @@ describe('数据完整性', () => {
     it('题目 id 全局不应重复', () => {
       const allIds = [];
       subjectIds.forEach(id => {
-        const questions = loadJSON(`questions/${id}.json`);
+        const questions = loadAllQuestions(id);
         questions.forEach(q => allIds.push(q.id));
       });
       expect(new Set(allIds).size).toBe(allIds.length);

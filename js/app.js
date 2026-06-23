@@ -5,6 +5,7 @@
 import { Store } from './state.js';
 import { $, $$, on } from './utils/dom.js';
 import { loadJSON } from './utils/helpers.js';
+import { initKeyboard, setContext } from './utils/keyboard.js';
 
 import dashboard from './pages/dashboard.js';
 import practice from './pages/practice.js';
@@ -25,6 +26,21 @@ const pageTitles = {
   laws: '重点法条',
   settings: '考试设置',
 };
+
+// ---- 数据标准化 ----
+const ANSWER_MAP = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5 };
+
+function normalizeQuestion(q) {
+  // answer: 支持字母("A") 和 数字(0) 两种格式
+  if (typeof q.answer === 'string') {
+    q.answer = ANSWER_MAP[q.answer.toUpperCase()] ?? 0;
+  }
+  // explanation: 兼容 analysis 字段
+  if (!q.explanation && q.analysis) {
+    q.explanation = q.analysis;
+  }
+  return q;
+}
 
 // ---- 全局状态 ----
 const store = new Store('fakao_data');
@@ -47,11 +63,21 @@ async function init() {
     appData.knowledge = knowledgeData || {};
     appData.laws = lawsData || [];
 
-    // 加载所有题目（按学科文件）
+    // 加载所有题目（支持单文件和分册文件）
     const subjectIds = appData.subjects.map(s => s.id);
-    const questionPromises = subjectIds.map(id => loadJSON(`./data/questions/${id}.json`));
-    const questionResults = await Promise.all(questionPromises);
-    appData.questions = questionResults.flat().filter(Boolean);
+    const questionFiles = [];
+    for (const id of subjectIds) {
+      // 刑法和民法有上中下三册
+      if (id === 'xs' || id === 'mg') {
+        questionFiles.push(`./data/questions/${id}_1.json`);
+        questionFiles.push(`./data/questions/${id}_2.json`);
+        questionFiles.push(`./data/questions/${id}_3.json`);
+      } else {
+        questionFiles.push(`./data/questions/${id}.json`);
+      }
+    }
+    const questionResults = await Promise.all(questionFiles.map(f => loadJSON(f).catch(() => [])));
+    appData.questions = questionResults.flat().filter(Boolean).map(normalizeQuestion);
 
     // 数据加载失败检查
     if (appData.subjects.length === 0) {
@@ -60,6 +86,9 @@ async function init() {
 
     // 绑定导航
     bindNavigation();
+
+    // 初始化键盘快捷键
+    initKeyboard();
 
     // 渲染初始页面
     switchPage('dashboard');
@@ -124,6 +153,9 @@ function switchPage(page) {
 
   // 初始化新页面
   pages[page].init(container, store, appData);
+
+  // 更新键盘快捷键上下文
+  setContext(page);
 }
 
 // 暴露全局方法供 HTML 内联事件使用（向后兼容）

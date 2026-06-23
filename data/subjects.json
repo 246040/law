@@ -8,7 +8,5 @@
   { "id": "xz", "name": "行政法与行政诉讼法", "color": "#f472b6", "icon": "&#9733;" },
   { "id": "sg", "name": "商法", "color": "#38bdf8", "icon": "&#9733;" },
   { "id": "jj", "name": "经济法", "color": "#fb923c", "icon": "&#9733;" },
-  { "id": "hj", "name": "环境资源法", "color": "#34d399", "icon": "&#9733;" },
-  { "id": "ld", "name": "劳动与社会保障法", "color": "#c084fc", "icon": "&#9733;" },
   { "id": "gj", "name": "国际法", "color": "#fbbf24", "icon": "&#9733;" }
 ]

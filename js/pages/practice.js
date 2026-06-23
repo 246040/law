@@ -142,7 +142,7 @@ export default {
           <div class="options-list" id="optionsList">${optionsHtml}</div>
           <div class="question-explanation ${isAnswered ? 'show' : ''}">
             <h4>${isAnswered ? (isCorrect ? '&#10003; 回答正确' : '&#10007; 回答错误') : ''}</h4>
-            <p>${q.explanation}</p>
+            <p>${q.analysis || q.explanation || ''}</p>
           </div>
         </div>
         <div class="question-actions">
@@ -200,6 +200,13 @@ export default {
         store.push('mistakes', { questionId: q.id, addedAt: Date.now(), reviewCount: 0 });
       }
     }
+
+    // 记录每日学习日志（用于趋势图和热力图）
+    const today = new Date().toISOString().slice(0, 10);
+    const dailyLog = store.get(`dailyLog.${today}`) || { answered: 0, correct: 0 };
+    dailyLog.answered++;
+    if (isCorrect) dailyLog.correct++;
+    store.set(`dailyLog.${today}`, dailyLog);
 
     this._renderQuestion();
   }

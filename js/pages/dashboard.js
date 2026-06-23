@@ -3,6 +3,7 @@
  */
 import { $, html } from '../utils/dom.js';
 import { daysUntil, percentage } from '../utils/helpers.js';
+import { drawTrendLine, drawRadar, drawHeatmap } from '../utils/charts.js';
 
 let store;
 let subjects;
@@ -14,6 +15,8 @@ export default {
     subjects = data.subjects;
     questions = data.questions;
     this.render(container);
+    // 延迟绘制 canvas（等待 DOM 渲染）
+    requestAnimationFrame(() => this._drawCharts(container));
   },
 
   render(container) {
@@ -72,6 +75,22 @@ export default {
         </div>
       </div>
 
+      <div class="dashboard-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="card animate-in">
+          <div class="card-title">正确率趋势</div>
+          <canvas id="chartTrend" style="width:100%;height:200px;"></canvas>
+        </div>
+        <div class="card animate-in">
+          <div class="card-title">学科能力</div>
+          <canvas id="chartRadar" style="width:100%;height:200px;"></canvas>
+        </div>
+      </div>
+
+      <div class="card animate-in" style="margin-top:20px;">
+        <div class="card-title">学习热力图</div>
+        <canvas id="chartHeatmap" style="width:100%;height:150px;"></canvas>
+      </div>
+
       <div class="dashboard-grid">
         <div class="card animate-in">
           <div class="card-title">学科进度</div>
@@ -113,5 +132,51 @@ export default {
       </div>`;
   },
 
+  _drawCharts(container) {
+    const state = store.get();
+
+    // 正确率趋势数据（从 dailyLog 获取）
+    const dailyLog = state.dailyLog || {};
+    const trendData = Object.entries(dailyLog)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-30) // 最近 30 天
+      .map(([date, log]) => ({
+        date,
+        rate: log.answered > 0 ? Math.round(log.correct / log.answered * 100) : 0,
+      }));
+
+    // 如果有数据，绘制趋势图
+    const trendCanvas = $('#chartTrend', container);
+    if (trendCanvas && trendData.length >= 2) {
+      drawTrendLine(trendCanvas, trendData);
+    }
+
+    // 学科雷达图
+    const radarCanvas = $('#chartRadar', container);
+    if (radarCanvas) {
+      const radarData = subjects.slice(0, 8).map(sub => {
+        const progress = state.subjectProgress[sub.id];
+        const score = progress && progress.answered > 0
+          ? Math.round(progress.correct / progress.answered * 100)
+          : 0;
+        return { name: sub.name.slice(0, 3), score };
+      });
+      if (radarData.some(d => d.score > 0)) {
+        drawRadar(radarCanvas, radarData);
+      }
+    }
+
+    // 学习热力图
+    const heatmapCanvas = $('#chartHeatmap', container);
+    if (heatmapCanvas) {
+      const heatmapData = {};
+      Object.entries(dailyLog).forEach(([date, log]) => {
+        heatmapData[date] = log.answered || 0;
+      });
+      drawHeatmap(heatmapCanvas, heatmapData, 12);
+    }
+  },
+
   destroy() {}
 };
+
