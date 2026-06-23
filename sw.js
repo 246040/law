@@ -7,31 +7,31 @@
  * - 字体/图片: Cache First（长期缓存）
  */
 
-const CACHE_NAME = 'fakao-v3.0';
-const DATA_CACHE = 'fakao-data-v3.0';
+const CACHE_NAME = 'fakao-v3.1';
+const DATA_CACHE = 'fakao-data-v3.1';
 
 // 核心资源（安装时预缓存）
 const PRECACHE_URLS = [
-  '/',
-  '/index.html',
-  '/css/tokens.css',
-  '/css/layout.css',
-  '/css/components.css',
-  '/js/app.js',
-  '/js/state.js',
-  '/js/utils/dom.js',
-  '/js/utils/helpers.js',
-  '/js/utils/sm2.js',
-  '/js/utils/charts.js',
-  '/js/utils/keyboard.js',
-  '/js/pages/dashboard.js',
-  '/js/pages/practice.js',
-  '/js/pages/flashcards.js',
-  '/js/pages/mistakes.js',
-  '/js/pages/knowledge.js',
-  '/js/pages/laws.js',
-  '/js/pages/settings.js',
-  '/data/subjects.json',
+  './',
+  './index.html',
+  './css/tokens.css',
+  './css/layout.css',
+  './css/components.css',
+  './js/app.js',
+  './js/state.js',
+  './js/utils/dom.js',
+  './js/utils/helpers.js',
+  './js/utils/sm2.js',
+  './js/utils/charts.js',
+  './js/utils/keyboard.js',
+  './js/pages/dashboard.js',
+  './js/pages/practice.js',
+  './js/pages/flashcards.js',
+  './js/pages/mistakes.js',
+  './js/pages/knowledge.js',
+  './js/pages/laws.js',
+  './js/pages/settings.js',
+  './data/subjects.json',
 ];
 
 // 数据文件（按需缓存）

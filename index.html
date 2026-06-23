@@ -6,7 +6,7 @@
   <title>法考通 · 法律职业资格考试备考助手</title>
   <meta name="description" content="法考通是一个面向法律职业资格考试（法考）的在线备考工具，提供刷题、速记卡片、错题本、知识体系等功能。">
   <meta name="theme-color" content="#d4a84b">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.loli.net" crossorigin>
@@ -87,7 +87,7 @@
     // PWA Service Worker 注册
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(reg => {
+        navigator.serviceWorker.register('./sw.js', { scope: './' }).then(reg => {
           console.log('[PWA] SW registered, scope:', reg.scope);
         }).catch(err => {
           console.warn('[PWA] SW registration failed:', err);
