@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="法考通关助手 - 为程序员量身打造的法考刷题工具，用判断树和工程思维攻克法考">
+  <meta name="theme-color" content="#0f1419">
+  <title>法考通关助手 | LawPass</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- 主题切换 -->
+    <button class="theme-toggle" onclick="App.toggleTheme()" aria-label="切换主题">🌙</button>
+
+    <!-- 导航栏（桌面端在顶部，移动端在底部） -->
+    <nav class="nav-bar" role="navigation" aria-label="主导航">
+      <button class="nav-item active" data-page="home" onclick="App.navigate('home')">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">首页</span>
+      </button>
+      <button class="nav-item" data-page="library" onclick="App.navigate('library')">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">题库</span>
+      </button>
+      <button class="nav-item" data-page="wrongbook" onclick="App.navigate('wrongbook')">
+        <span class="nav-icon">📕</span>
+        <span class="nav-label">错题</span>
+      </button>
+      <button class="nav-item" data-page="stats" onclick="App.navigate('stats')">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">统计</span>
+      </button>
+      <button class="nav-item" data-page="exam" onclick="App.navigate('exam')">
+        <span class="nav-icon">⏱</span>
+        <span class="nav-label">模拟</span>
+      </button>
+      <button class="nav-item" data-page="tree" onclick="App.navigate('tree')">
+        <span class="nav-icon">🌳</span>
+        <span class="nav-label">判断树</span>
+      </button>
+    </nav>
+
+    <!-- 页面容器 -->
+    <main class="main-content">
+      <!-- 首页 -->
+      <section id="page-home" class="page active" aria-label="首页">
+        <!-- 由 App.renderHome() 动态填充 -->
+      </section>
+
+      <!-- 题库 -->
+      <section id="page-library" class="page" aria-label="题库">
+        <!-- 由 App.renderLibrary() 动态填充 -->
+      </section>
+
+      <!-- 做题 -->
+      <section id="page-quiz" class="page" aria-label="做题">
+        <!-- 由 Quiz 模块动态填充 -->
+      </section>
+
+      <!-- 错题本 -->
+      <section id="page-wrongbook" class="page" aria-label="错题本">
+        <!-- 由 WrongBook.render() 动态填充 -->
+      </section>
+
+      <!-- 统计 -->
+      <section id="page-stats" class="page" aria-label="学习统计">
+        <!-- 由 Stats.render() 动态填充 -->
+      </section>
+
+      <!-- 限时模拟 -->
+      <section id="page-exam" class="page" aria-label="限时模拟">
+        <!-- 由 Exam 模块动态填充 -->
+      </section>
+
+      <!-- 判断树 -->
+      <section id="page-tree" class="page" aria-label="判断树">
+        <!-- 由 Tree.render() 动态填充 -->
+      </section>
+    </main>
+
+  </div>
+
+  <!-- JS 加载顺序：数据 → 存储 → 功能模块 → 主控 -->
+  <script src="js/questions.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/wrongbook.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/tree.js"></script>
+  <script src="js/exam.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
