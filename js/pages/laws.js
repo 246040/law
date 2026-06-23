@@ -21,22 +21,22 @@ export default {
       </div>
       <div class="law-list" id="lawList"></div>`;
 
-    this.#renderList('');
-    this.#bindEvents();
+    this._renderList('');
+    this._bindEvents();
   },
 
   destroy() {},
 
-  #bindEvents() {
+  _bindEvents() {
     const input = $('#lawSearchInput', container);
     if (input) {
       input.addEventListener('input', debounce(() => {
-        this.#renderList(input.value);
+        this._renderList(input.value);
       }, 200));
     }
   },
 
-  #renderList(query) {
+  _renderList(query) {
     const q = (query || '').toLowerCase();
     const filtered = laws.filter(law =>
       law.name.toLowerCase().includes(q) ||

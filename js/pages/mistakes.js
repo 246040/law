@@ -85,12 +85,12 @@ export default {
       </div>
       <div id="mistakeList">${listHTML}</div>`;
 
-    this.#bindEvents();
+    this._bindEvents();
   },
 
   destroy() {},
 
-  #bindEvents() {
+  _bindEvents() {
     // Filters
     $('#mistakeFilters', container)?.addEventListener('click', (e) => {
       const chip = e.target.closest('[data-filter]');

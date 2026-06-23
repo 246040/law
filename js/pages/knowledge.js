@@ -47,26 +47,26 @@ export default {
         </div>
       </div>`;
 
-    this.#bindEvents();
+    this._bindEvents();
   },
 
   destroy() {},
 
-  #bindEvents() {
+  _bindEvents() {
     // Card click → open detail
     container.querySelector('#knowledgeListView')?.addEventListener('click', (e) => {
       const card = e.target.closest('[data-subject]');
       if (!card) return;
-      this.#openDetail(card.dataset.subject);
+      this._openDetail(card.dataset.subject);
     });
 
     // Back button
     container.querySelector('#btnBackKnowledge')?.addEventListener('click', () => {
-      this.#closeDetail();
+      this._closeDetail();
     });
   },
 
-  #openDetail(id) {
+  _openDetail(id) {
     const data = knowledge[id];
     if (!data) return;
 
@@ -91,7 +91,7 @@ export default {
     contentEl.innerHTML = html;
   },
 
-  #closeDetail() {
+  _closeDetail() {
     container.querySelector('#knowledgeListView').style.display = 'block';
     container.querySelector('#knowledgeDetailView').style.display = 'none';
   }

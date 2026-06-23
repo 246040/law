@@ -48,20 +48,20 @@ export default {
         <div id="studyPlan" style="margin-top:16px;"></div>
       </div>`;
 
-    this.#renderStudyPlan();
-    this.#bindEvents();
+    this._renderStudyPlan();
+    this._bindEvents();
   },
 
   destroy() {},
 
-  #bindEvents() {
+  _bindEvents() {
     // Save settings
     $('#btnSaveSettings', container)?.addEventListener('click', () => {
       const examDate = $('#examDateInput', container).value;
       const dailyGoal = parseInt($('#dailyGoalInput', container).value) || 30;
       const targetScore = parseInt($('#targetScoreInput', container).value) || 180;
       store.set('settings', { examDate, dailyGoal, targetScore });
-      this.#renderStudyPlan();
+      this._renderStudyPlan();
       alert('设置已保存！');
     });
 
@@ -99,7 +99,7 @@ export default {
     });
   },
 
-  #renderStudyPlan() {
+  _renderStudyPlan() {
     const planEl = $('#studyPlan', container);
     if (!planEl) return;
 

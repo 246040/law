@@ -41,10 +41,10 @@ export default {
         </div>
       </div>`;
 
-    this.#bindEvents();
+    this._bindEvents();
 
     if (practiceState.active) {
-      this.#renderQuestion();
+      this._renderQuestion();
     }
   },
 
@@ -52,7 +52,7 @@ export default {
 
   // ---- Private ----
 
-  #bindEvents() {
+  _bindEvents() {
     // Filter chips
     $('#practiceFilters', container)?.addEventListener('click', (e) => {
       const chip = e.target.closest('[data-filter]');
@@ -62,7 +62,7 @@ export default {
     });
 
     // Start
-    $('#btnStartPractice', container)?.addEventListener('click', () => this.#startPractice());
+    $('#btnStartPractice', container)?.addEventListener('click', () => this._startPractice());
 
     // Reset
     $('#btnResetPractice', container)?.addEventListener('click', () => {
@@ -71,14 +71,14 @@ export default {
     });
   },
 
-  #startPractice() {
+  _startPractice() {
     let pool = practiceFilter === 'all' ? [...questions] : questions.filter(q => q.subject === practiceFilter);
     pool = shuffle(pool);
     practiceState = { active: true, questions: pool, currentIndex: 0, answered: false, selectedOption: -1, results: [] };
-    this.#renderQuestion();
+    this._renderQuestion();
   },
 
-  #renderQuestion() {
+  _renderQuestion() {
     const area = $('#practiceArea', container);
     if (!area) return;
 
@@ -99,7 +99,7 @@ export default {
             <button class="btn btn-primary" id="btnAgain">再来一轮</button>
             <button class="btn btn-ghost" style="margin-left:12px;" id="btnBack">返回</button>
           </div>`;
-        area.querySelector('#btnAgain')?.addEventListener('click', () => this.#startPractice());
+        area.querySelector('#btnAgain')?.addEventListener('click', () => this._startPractice());
         area.querySelector('#btnBack')?.addEventListener('click', () => {
           practiceState.active = false;
           this.render();
@@ -161,23 +161,23 @@ export default {
         const opt = e.target.closest('[data-idx]');
         if (!opt) return;
         practiceState.selectedOption = parseInt(opt.dataset.idx);
-        this.#renderQuestion();
+        this._renderQuestion();
       });
     }
 
     // Submit
-    area.querySelector('#btnSubmit')?.addEventListener('click', () => this.#submitAnswer());
+    area.querySelector('#btnSubmit')?.addEventListener('click', () => this._submitAnswer());
 
     // Next
     area.querySelector('#btnNext')?.addEventListener('click', () => {
       practiceState.currentIndex++;
       practiceState.answered = false;
       practiceState.selectedOption = -1;
-      this.#renderQuestion();
+      this._renderQuestion();
     });
   },
 
-  #submitAnswer() {
+  _submitAnswer() {
     if (practiceState.selectedOption < 0) return;
     practiceState.answered = true;
     const q = practiceState.questions[practiceState.currentIndex];
@@ -201,6 +201,6 @@ export default {
       }
     }
 
-    this.#renderQuestion();
+    this._renderQuestion();
   }
 };

@@ -17,7 +17,7 @@ export default {
     container = _container;
     filter = 'all';
     cardIndex = 0;
-    this.#buildDeck();
+    this._buildDeck();
     this.render();
   },
 
@@ -64,17 +64,17 @@ export default {
         </div>
       </div>`;
 
-    this.#bindEvents();
+    this._bindEvents();
   },
 
   destroy() {},
 
-  #buildDeck() {
+  _buildDeck() {
     deck = filter === 'all' ? [...flashcards] : flashcards.filter(f => f.subject === filter);
     if (cardIndex >= deck.length) cardIndex = 0;
   },
 
-  #bindEvents() {
+  _bindEvents() {
     // Flip
     $('#flashcard', container)?.addEventListener('click', () => {
       $('#flashcard', container)?.classList.toggle('flipped');
@@ -86,7 +86,7 @@ export default {
       if (!chip) return;
       filter = chip.dataset.filter;
       cardIndex = 0;
-      this.#buildDeck();
+      this._buildDeck();
       this.render();
     });
 
@@ -111,12 +111,12 @@ export default {
     });
 
     // Difficulty marks
-    $('#btnHard', container)?.addEventListener('click', () => this.#mark('hard'));
-    $('#btnOk', container)?.addEventListener('click', () => this.#mark('ok'));
-    $('#btnEasy', container)?.addEventListener('click', () => this.#mark('easy'));
+    $('#btnHard', container)?.addEventListener('click', () => this._mark('hard'));
+    $('#btnOk', container)?.addEventListener('click', () => this._mark('ok'));
+    $('#btnEasy', container)?.addEventListener('click', () => this._mark('easy'));
   },
 
-  #mark(level) {
+  _mark(level) {
     if (deck.length === 0) return;
     const card = deck[cardIndex];
     const cardStatus = store.get('cardStatus') || {};
