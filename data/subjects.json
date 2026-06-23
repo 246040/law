@@ -1,0 +1,14 @@
+[
+  { "id": "xf", "name": "宪法", "color": "#e8c547", "icon": "&#9733;" },
+  { "id": "fx", "name": "法理学", "color": "#60a5fa", "icon": "&#9733;" },
+  { "id": "xs", "name": "刑法", "color": "#e05252", "icon": "&#9733;" },
+  { "id": "ss", "name": "刑事诉讼法", "color": "#f97316", "icon": "&#9733;" },
+  { "id": "mg", "name": "民法", "color": "#4ade80", "icon": "&#9733;" },
+  { "id": "ms", "name": "民事诉讼法", "color": "#a78bfa", "icon": "&#9733;" },
+  { "id": "xz", "name": "行政法与行政诉讼法", "color": "#f472b6", "icon": "&#9733;" },
+  { "id": "sg", "name": "商法", "color": "#38bdf8", "icon": "&#9733;" },
+  { "id": "jj", "name": "经济法", "color": "#fb923c", "icon": "&#9733;" },
+  { "id": "hj", "name": "环境资源法", "color": "#34d399", "icon": "&#9733;" },
+  { "id": "ld", "name": "劳动与社会保障法", "color": "#c084fc", "icon": "&#9733;" },
+  { "id": "gj", "name": "国际法", "color": "#fbbf24", "icon": "&#9733;" }
+]

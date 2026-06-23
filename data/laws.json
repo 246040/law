@@ -1,0 +1,142 @@
+[
+  {
+    "id": "l1",
+    "name": "中华人民共和国宪法",
+    "category": "宪法",
+    "importance": "high",
+    "keywords": "根本法 国家制度 公民权利"
+  },
+  {
+    "id": "l2",
+    "name": "中华人民共和国民法典",
+    "category": "民法",
+    "importance": "high",
+    "keywords": "物权 合同 人格权 婚姻 继承 侵权"
+  },
+  {
+    "id": "l3",
+    "name": "中华人民共和国刑法",
+    "category": "刑法",
+    "importance": "high",
+    "keywords": "犯罪 刑罚 量刑 罪名"
+  },
+  {
+    "id": "l4",
+    "name": "中华人民共和国刑事诉讼法",
+    "category": "刑事诉讼法",
+    "importance": "high",
+    "keywords": "刑事程序 证据 强制措施 审判"
+  },
+  {
+    "id": "l5",
+    "name": "中华人民共和国民事诉讼法",
+    "category": "民事诉讼法",
+    "importance": "high",
+    "keywords": "管辖 当事人 审判程序 执行"
+  },
+  {
+    "id": "l6",
+    "name": "中华人民共和国行政诉讼法",
+    "category": "行政法",
+    "importance": "high",
+    "keywords": "行政诉讼 受案范围 举证责任 判决"
+  },
+  {
+    "id": "l7",
+    "name": "中华人民共和国行政处罚法",
+    "category": "行政法",
+    "importance": "high",
+    "keywords": "行政处罚 听证程序 时效"
+  },
+  {
+    "id": "l8",
+    "name": "中华人民共和国行政许可法",
+    "category": "行政法",
+    "importance": "medium",
+    "keywords": "行政许可 设定 实施 程序"
+  },
+  {
+    "id": "l9",
+    "name": "中华人民共和国行政强制法",
+    "category": "行政法",
+    "importance": "medium",
+    "keywords": "行政强制 行政强制执行"
+  },
+  {
+    "id": "l10",
+    "name": "中华人民共和国公司法",
+    "category": "商法",
+    "importance": "high",
+    "keywords": "有限公司 股份公司 股东 公司治理"
+  },
+  {
+    "id": "l11",
+    "name": "中华人民共和国合伙企业法",
+    "category": "商法",
+    "importance": "medium",
+    "keywords": "普通合伙 有限合伙"
+  },
+  {
+    "id": "l12",
+    "name": "中华人民共和国保险法",
+    "category": "商法",
+    "importance": "medium",
+    "keywords": "保险合同 保险理赔"
+  },
+  {
+    "id": "l13",
+    "name": "中华人民共和国反垄断法",
+    "category": "经济法",
+    "importance": "medium",
+    "keywords": "垄断行为 反垄断"
+  },
+  {
+    "id": "l14",
+    "name": "中华人民共和国反不正当竞争法",
+    "category": "经济法",
+    "importance": "medium",
+    "keywords": "不正当竞争行为"
+  },
+  {
+    "id": "l15",
+    "name": "中华人民共和国消费者权益保护法",
+    "category": "经济法",
+    "importance": "high",
+    "keywords": "消费者权利 七天无理由退货 惩罚性赔偿"
+  },
+  {
+    "id": "l16",
+    "name": "中华人民共和国劳动法",
+    "category": "劳动法",
+    "importance": "medium",
+    "keywords": "劳动合同 劳动争议 工资 工时"
+  },
+  {
+    "id": "l17",
+    "name": "中华人民共和国劳动合同法",
+    "category": "劳动法",
+    "importance": "high",
+    "keywords": "劳动合同 订立 解除 经济补偿"
+  },
+  {
+    "id": "l18",
+    "name": "中华人民共和国国家赔偿法",
+    "category": "行政法",
+    "importance": "medium",
+    "keywords": "行政赔偿 刑事赔偿"
+  },
+  {
+    "id": "l19",
+    "name": "中华人民共和国立法法",
+    "category": "法理学",
+    "importance": "medium",
+    "keywords": "立法权限 立法程序 法律效力"
+  },
+  {
+    "id": "l20",
+    "name": "中华人民共和国监察法",
+    "category": "宪法",
+    "importance": "medium",
+    "keywords": "监察委员会 监察权限 留置"
+  }
+]

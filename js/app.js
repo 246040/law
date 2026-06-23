@@ -1,247 +1,110 @@
 /**
- * 法考通关助手 - 主应用控制器
- * 路由管理、页面切换、全局初始化
+ * 法考通 · 应用入口
+ * 负责数据加载、路由、导航初始化
  */
+import { Store } from './state.js';
+import { $, $$, on } from './utils/dom.js';
+import { loadJSON } from './utils/helpers.js';
 
-const App = {
-  currentPage: 'home',
+import dashboard from './pages/dashboard.js';
+import practice from './pages/practice.js';
+import flashcards from './pages/flashcards.js';
+import mistakes from './pages/mistakes.js';
+import knowledge from './pages/knowledge.js';
+import laws from './pages/laws.js';
+import settings from './pages/settings.js';
 
-  init() {
-    // 初始化主题
-    const theme = Store.getTheme();
-    document.documentElement.setAttribute('data-theme', theme);
-
-    // 监听路由变化
-    window.addEventListener('hashchange', () => this.handleRoute());
-
-    // 初始路由
-    this.handleRoute();
-
-    // 更新统计
-    Store.updateStats();
-  },
-
-  handleRoute() {
-    const hash = window.location.hash.replace('#', '') || 'home';
-    this.navigate(hash, false);
-  },
-
-  navigate(page, updateHash = true) {
-    this.currentPage = page;
-
-    // 更新 hash
-    if (updateHash) {
-      window.location.hash = page;
-    }
-
-    // 隐藏所有页面
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-    // 显示目标页面
-    const target = document.getElementById(`page-${page}`);
-    if (target) {
-      target.classList.add('active');
-    }
-
-    // 更新导航高亮
-    document.querySelectorAll('.nav-item').forEach(item => {
-      item.classList.toggle('active', item.dataset.page === page);
-    });
-
-    // 渲染页面内容
-    this.renderPage(page);
-  },
-
-  renderPage(page) {
-    switch (page) {
-      case 'home':
-        this.renderHome();
-        break;
-      case 'library':
-        this.renderLibrary();
-        break;
-      case 'quiz':
-        // quiz 由 Quiz 模块自己渲染
-        break;
-      case 'wrongbook':
-        WrongBook.render();
-        break;
-      case 'stats':
-        Stats.render();
-        break;
-      case 'exam':
-        Exam.renderSetup();
-        break;
-      case 'tree':
-        Tree.render();
-        break;
-    }
-  },
-
-  renderHome() {
-    const page = document.getElementById('page-home');
-    if (!page) return;
-
-    const today = Store.getTodayStats();
-    const stats = Store.getStats();
-    const wrongCount = Store.getActiveWrongBook().length;
-
-    page.innerHTML = `
-      <div class="page-header">
-        <h1 class="page-title">⚖️ 法考通关助手</h1>
-        <p class="page-subtitle">工程化备考，用判断树攻克法考</p>
-      </div>
-
-      <!-- 今日进度 -->
-      <div class="card card-highlight mb-md animate-in">
-        <div class="flex-between mb-md">
-          <h3 style="color: var(--accent-gold);">📅 今日进度</h3>
-          <span class="badge badge-gold">Day ${this.getDayCount()}</span>
-        </div>
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-value">${today.done}</div>
-            <div class="stat-label">做题数</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">${today.rate}%</div>
-            <div class="stat-label">正确率</div>
-          </div>
-        </div>
-        <div class="progress-bar mt-md">
-          <div class="progress-fill" style="width: ${Math.min((today.done / 30) * 100, 100)}%"></div>
-        </div>
-        <div class="progress-text">今日目标：${today.done}/30 题</div>
-      </div>
-
-      <!-- 快速操作 -->
-      <div class="card mb-md animate-in">
-        <h3 style="color: var(--accent-gold); margin-bottom: var(--space-md);">🚀 快速开始</h3>
-        <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
-          <button class="btn btn-primary btn-block" onclick="App.quickStart()">
-            📝 开始练习（全部${QUESTIONS.length}题）
-          </button>
-          <button class="btn btn-secondary btn-block" onclick="App.navigate('exam')">
-            ⏱ 限时模拟
-          </button>
-          ${wrongCount > 0 ? `
-            <button class="btn btn-secondary btn-block" onclick="App.quickWrongBook()">
-              🔄 重做错题（${wrongCount}题）
-            </button>
-          ` : ''}
-          <button class="btn btn-ghost btn-block" onclick="App.navigate('tree')">
-            🌳 查看判断树
-          </button>
-        </div>
-      </div>
-
-      <!-- 总体概览 -->
-      <div class="card animate-in">
-        <h3 style="color: var(--accent-gold); margin-bottom: var(--space-md);">📊 学习概览</h3>
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-value">${stats.totalDone}</div>
-            <div class="stat-label">总做题</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">${stats.correctRate}%</div>
-            <div class="stat-label">正确率</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">${wrongCount}</div>
-            <div class="stat-label">错题</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value">${stats.streak}</div>
-            <div class="stat-label">连对</div>
-          </div>
-        </div>
-      </div>
-    `;
-  },
-
-  renderLibrary() {
-    const page = document.getElementById('page-library');
-    if (!page) return;
-
-    const history = Store.getHistory();
-
-    page.innerHTML = `
-      <div class="page-header">
-        <h1 class="page-title">📚 题库</h1>
-        <p class="page-subtitle">选择章节开始练习</p>
-      </div>
-
-      <div class="category-list animate-in">
-        ${QUESTION_INDEX.categories.map(cat => `
-          <div class="card mb-sm">
-            <h3 style="color: var(--accent-gold); margin-bottom: var(--space-md);">${cat.name}</h3>
-            ${cat.subcategories.map(sub => `
-              <div style="margin-bottom: var(--space-md);">
-                <h4 style="color: var(--text-secondary); font-size: var(--text-sm); margin-bottom: var(--space-sm);">${sub.name}</h4>
-                <div class="category-list">
-                  ${sub.topics.map(topic => {
-                    const done = topic.questionIds.filter(id =>
-                      history.some(h => h.questionId === id)
-                    ).length;
-                    return `
-                      <div class="category-item" onclick="App.startTopic(${JSON.stringify(topic.questionIds)})">
-                        <div>
-                          <span class="category-name">${topic.name}</span>
-                          <span style="color: var(--text-muted); font-size: var(--text-xs); margin-left: 8px;">
-                            ${done}/${topic.questionIds.length} 已做
-                          </span>
-                        </div>
-                        <span class="category-count">${topic.questionIds.length}题</span>
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        `).join('')}
-      </div>
-
-      <div class="card mt-lg animate-in">
-        <button class="btn btn-primary btn-block" onclick="App.quickStart()">
-          📝 全部题目一起练（${QUESTIONS.length}题）
-        </button>
-      </div>
-    `;
-  },
-
-  quickStart() {
-    Quiz.startAll();
-    this.navigate('quiz');
-  },
-
-  quickWrongBook() {
-    Quiz.startWrongBook();
-    this.navigate('quiz');
-  },
-
-  startTopic(questionIds) {
-    Quiz.startTopic(questionIds);
-    this.navigate('quiz');
-  },
-
-  toggleTheme() {
-    const current = Store.getTheme();
-    const next = current === 'dark' ? 'light' : 'dark';
-    Store.setTheme(next);
-    document.documentElement.setAttribute('data-theme', next);
-    const btn = document.querySelector('.theme-toggle');
-    if (btn) btn.textContent = next === 'dark' ? '🌙' : '☀️';
-  },
-
-  getDayCount() {
-    const history = Store.getHistory();
-    if (history.length === 0) return 1;
-    const dates = new Set(history.map(h => h.timestamp.split('T')[0]));
-    return dates.size || 1;
-  }
+// ---- 路由表 ----
+const pages = { dashboard, practice, flashcards, mistakes, knowledge, laws, settings };
+const pageTitles = {
+  dashboard: '学习面板',
+  practice: '刷题练习',
+  flashcards: '速记卡片',
+  mistakes: '错题本',
+  knowledge: '知识体系',
+  laws: '重点法条',
+  settings: '考试设置',
 };
 
-// 启动应用
-document.addEventListener('DOMContentLoaded', () => App.init());
+// ---- 全局状态 ----
+const store = new Store('fakao_data');
+let currentPage = 'dashboard';
+let appData = { subjects: [], questions: [], flashcards: [], knowledge: {}, laws: [] };
+
+// ---- 初始化 ----
+async function init() {
+  // 加载数据
+  const [subjectsData, flashcardsData, knowledgeData, lawsData] = await Promise.all([
+    loadJSON('./data/subjects.json'),
+    loadJSON('./data/flashcards.json'),
+    loadJSON('./data/knowledge.json'),
+    loadJSON('./data/laws.json'),
+  ]);
+
+  appData.subjects = subjectsData || [];
+  appData.flashcards = flashcardsData || [];
+  appData.knowledge = knowledgeData || {};
+  appData.laws = lawsData || [];
+
+  // 加载所有题目（按学科文件）
+  const subjectIds = appData.subjects.map(s => s.id);
+  const questionPromises = subjectIds.map(id => loadJSON(`./data/questions/${id}.json`));
+  const questionResults = await Promise.all(questionPromises);
+  appData.questions = questionResults.flat().filter(Boolean);
+
+  // 绑定导航
+  bindNavigation();
+
+  // 渲染初始页面
+  switchPage('dashboard');
+}
+
+// ---- 导航 ----
+function bindNavigation() {
+  // 侧边栏导航项
+  on(document.body, 'click', '.nav-item[data-page]', (e, el) => {
+    switchPage(el.dataset.page);
+  });
+
+  // 快速操作导航
+  on(document.body, 'click', '[data-nav]', (e, el) => {
+    switchPage(el.dataset.nav);
+  });
+
+  // 移动端菜单按钮
+  $('#menuToggle')?.addEventListener('click', () => {
+    $('#sidebar')?.classList.toggle('open');
+  });
+}
+
+function switchPage(page) {
+  if (!pages[page]) return;
+  currentPage = page;
+
+  // 更新侧边栏高亮
+  $$('.nav-item').forEach(n => n.classList.remove('active'));
+  $(`.nav-item[data-page="${page}"]`)?.classList.add('active');
+
+  // 更新标题
+  const titleEl = $('#pageTitle');
+  if (titleEl) titleEl.textContent = pageTitles[page] || '';
+
+  // 关闭移动端侧边栏
+  $('#sidebar')?.classList.remove('open');
+
+  // 获取容器并渲染页面
+  const container = $('#pageContent');
+  if (!container) return;
+
+  // 销毁当前页面
+  // （如果之前的页面有 destroy 方法）
+
+  // 初始化新页面
+  pages[page].init(container, store, appData);
+}
+
+// 暴露全局方法供 HTML 内联事件使用（向后兼容）
+window.switchPage = switchPage;
+
+// ---- 启动 ----
+init();
