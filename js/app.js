@@ -101,7 +101,7 @@ async function init() {
     // 加载多选题/不定项选择题
     const multiData = await loadJSON('./data/questions/multi_sample.json').catch(() => []);
     // 加载AI生成题库
-    const genFiles = ['xs_gen_1', 'xs_gen_2', 'xs_gen_3', 'mg_gen_1', 'mg_gen_2', 'mg_gen_3', 'ms_gen_1', 'ms_gen_2', 'ms_gen_3', 'ss_gen_1', 'ss_gen_2', 'ss_gen_3', 'xz_gen_1', 'xz_gen_2', 'sg_gen_1', 'xf_gen_1', 'fx_gen_1', 'gj_gen_1', 'jj_gen_1'];
+    const genFiles = ['xs_gen_1', 'xs_gen_2', 'xs_gen_3', 'mg_gen_1', 'mg_gen_2', 'mg_gen_3', 'ms_gen_1', 'ms_gen_2', 'ms_gen_3', 'ms_gen_4', 'ss_gen_1', 'ss_gen_2', 'ss_gen_3', 'xz_gen_1', 'xz_gen_2', 'sg_gen_1', 'sg_gen_2', 'xf_gen_1', 'xf_gen_2', 'fx_gen_1', 'gj_gen_1', 'jj_gen_1'];
     const genResults = await Promise.all(genFiles.map(f => loadJSON(`./data/questions/${f}.json`).catch(() => [])));
     appData.questions = [...questionResults.flat().filter(Boolean), ...(multiData || []), ...genResults.flat().filter(Boolean)].map(normalizeQuestion);
 
