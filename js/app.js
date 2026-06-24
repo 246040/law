@@ -101,7 +101,7 @@ async function init() {
     // 加载多选题/不定项选择题
     const multiData = await loadJSON('./data/questions/multi_sample.json').catch(() => []);
     // 加载AI生成题库
-    const genFiles = ['xs_gen_1', 'xs_gen_2'];
+    const genFiles = ['xs_gen_1', 'xs_gen_2', 'mg_gen_1', 'ms_gen_1', 'ss_gen_1', 'xz_gen_1'];
     const genResults = await Promise.all(genFiles.map(f => loadJSON(`./data/questions/${f}.json`).catch(() => [])));
     appData.questions = [...questionResults.flat().filter(Boolean), ...(multiData || []), ...genResults.flat().filter(Boolean)].map(normalizeQuestion);
 
