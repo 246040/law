@@ -3,7 +3,7 @@
  */
 import { $, html } from '../utils/dom.js';
 import { daysUntil, percentage } from '../utils/helpers.js';
-import { drawTrendLine, drawRadar, drawHeatmap } from '../utils/charts.js';
+import { drawTrendLine, drawRadar, drawHeatmap, drawBarChart } from '../utils/charts.js';
 import { generateRecommendation } from '../recommend.js';
 
 let store;
@@ -114,9 +114,15 @@ export default {
         </div>
       </div>
 
-      <div class="card animate-in" style="margin-top:20px;">
-        <div class="card-title">学习热力图</div>
-        <canvas id="chartHeatmap" style="width:100%;height:150px;"></canvas>
+      <div class="dashboard-grid" style="grid-template-columns:1fr 1fr;margin-top:20px;">
+        <div class="card animate-in">
+          <div class="card-title">学科正确率对比</div>
+          <canvas id="chartBar" style="width:100%;height:220px;"></canvas>
+        </div>
+        <div class="card animate-in">
+          <div class="card-title">学习热力图</div>
+          <canvas id="chartHeatmap" style="width:100%;height:220px;"></canvas>
+        </div>
       </div>
 
       <div class="dashboard-grid">
@@ -200,6 +206,21 @@ export default {
       });
       if (radarData.some(d => d.score > 0)) {
         drawRadar(radarCanvas, radarData);
+      }
+    }
+
+    // 学科柱状图
+    const barCanvas = $('#chartBar', container);
+    if (barCanvas) {
+      const barData = subjects.slice(0, 8).map(sub => {
+        const progress = state.subjectProgress[sub.id];
+        const answered = progress?.answered || 0;
+        const correct = progress?.correct || 0;
+        const rate = answered > 0 ? Math.round(correct / answered * 100) : 0;
+        return { name: sub.name, rate, count: answered };
+      }).filter(d => d.count > 0);
+      if (barData.length > 0) {
+        drawBarChart(barCanvas, barData);
       }
     }
 
