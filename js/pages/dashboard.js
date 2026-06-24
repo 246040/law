@@ -4,6 +4,7 @@
 import { $, html } from '../utils/dom.js';
 import { daysUntil, percentage } from '../utils/helpers.js';
 import { drawTrendLine, drawRadar, drawHeatmap } from '../utils/charts.js';
+import { generateRecommendation } from '../recommend.js';
 
 let store;
 let subjects;
@@ -45,12 +46,34 @@ export default {
         </div>`;
     });
 
+    // 智能推荐
+    const { recommendations } = generateRecommendation(state, subjects, questions);
+    let recommendHTML = '';
+    if (recommendations.length > 0) {
+      const items = recommendations.slice(0, 3).map(r => `
+        <div class="recommend-item" data-nav="${r.action}">
+          <span class="recommend-icon">${r.icon}</span>
+          <div class="recommend-content">
+            <div class="recommend-title">${r.title}</div>
+            <div class="recommend-desc">${r.description}</div>
+          </div>
+          <span class="recommend-arrow">→</span>
+        </div>`).join('');
+      recommendHTML = `
+      <div class="card animate-in recommend-card">
+        <div class="card-title">💡 今日推荐</div>
+        ${items}
+      </div>`;
+    }
+
     container.innerHTML = `
       <div class="dashboard-hero animate-in">
         <div class="hero-countdown">${days != null ? days : '--'}<span>天</span></div>
         <div class="hero-subtitle">距离法考客观题考试还有</div>
         <div class="hero-exam-date">&#128197; ${examDate ? '考试日期：' + examDate : '请先在设置中配置考试日期'}</div>
       </div>
+
+      ${recommendHTML}
 
       <div class="stats-grid">
         <div class="stat-card animate-in">
@@ -62,6 +85,11 @@ export default {
           <div class="stat-label">正确率</div>
           <div class="stat-value">${accuracy}%</div>
           <div class="stat-sub">正确 / 总数</div>
+        </div>
+        <div class="stat-card animate-in">
+          <div class="stat-label">&#128293; 连续打卡</div>
+          <div class="stat-value">${state.streak?.current || 0}<span style="font-size:0.5em;"> 天</span></div>
+          <div class="stat-sub">最佳 ${state.streak?.best || 0} 天</div>
         </div>
         <div class="stat-card animate-in">
           <div class="stat-label">错题数</div>
@@ -127,9 +155,18 @@ export default {
                 <p>系统梳理学科框架</p>
               </div>
             </div>
+            <div class="quick-action-item" data-nav="exam">
+              <div class="quick-action-icon" style="background:rgba(239,68,68,0.12);color:var(--accent-red);">&#128203;</div>
+              <div class="quick-action-text">
+                <h4>模拟考试</h4>
+                <p>限时模考，检验水平</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>`;
+      </div>
+
+      ${this._renderExamHistory(state)}`;
   },
 
   _drawCharts(container) {
@@ -175,6 +212,36 @@ export default {
       });
       drawHeatmap(heatmapCanvas, heatmapData, 12);
     }
+  },
+
+  _renderExamHistory(state) {
+    const history = (state.examHistory || []).slice(-5).reverse();
+    if (history.length === 0) return '';
+
+    let rows = '';
+    history.forEach(h => {
+      const date = new Date(h.timestamp).toLocaleDateString('zh-CN');
+      const passed = h.report.passed;
+      rows += `
+        <tr>
+          <td>${h.config}</td>
+          <td><strong style="color:${passed ? 'var(--accent-green)' : 'var(--accent-red)'};">${h.report.score}</strong> / ${h.report.totalScore}</td>
+          <td>${passed ? '<span class="badge badge-green">通过</span>' : '<span class="badge badge-red">未通过</span>'}</td>
+          <td style="color:var(--text-muted);font-size:0.72rem;">${date}</td>
+        </tr>`;
+    });
+
+    return `
+      <div class="card animate-in" style="margin-top:20px;">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>模考历史</span>
+          <button class="btn btn-ghost btn-sm" data-nav="exam">更多 →</button>
+        </div>
+        <table class="exam-report-table">
+          <thead><tr><th>类型</th><th>得分</th><th>结果</th><th>日期</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
   },
 
   destroy() {}

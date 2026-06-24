@@ -14,12 +14,14 @@ import mistakes from './pages/mistakes.js';
 import knowledge from './pages/knowledge.js';
 import laws from './pages/laws.js';
 import settings from './pages/settings.js';
+import exam from './pages/exam.js';
 
 // ---- 路由表 ----
-const pages = { dashboard, practice, flashcards, mistakes, knowledge, laws, settings };
+const pages = { dashboard, practice, flashcards, mistakes, knowledge, laws, exam, settings };
 const pageTitles = {
   dashboard: '学习面板',
   practice: '刷题练习',
+  exam: '模拟考试',
   flashcards: '速记卡片',
   mistakes: '错题本',
   knowledge: '知识体系',
@@ -31,10 +33,29 @@ const pageTitles = {
 const ANSWER_MAP = { A: 0, B: 1, C: 2, D: 3, E: 4, F: 5 };
 
 function normalizeQuestion(q) {
-  // answer: 支持字母("A") 和 数字(0) 两种格式
-  if (typeof q.answer === 'string') {
-    q.answer = ANSWER_MAP[q.answer.toUpperCase()] ?? 0;
+  // answer: 支持多种格式
+  // 单选: "A" → 0, 0 → 0
+  // 多选: ["A","C"] → [0,2], [0,2] → [0,2], "AC" → [0,2]
+  if (Array.isArray(q.answer)) {
+    // 数组格式：统一转为数字数组
+    q.answer = q.answer.map(a =>
+      typeof a === 'string' ? (ANSWER_MAP[a.toUpperCase()] ?? 0) : a
+    ).sort((a, b) => a - b);
+  } else if (typeof q.answer === 'string') {
+    if (q.answer.length > 1 && !ANSWER_MAP.hasOwnProperty(q.answer)) {
+      // 多字母拼接格式 "AC" → [0, 2]
+      q.answer = q.answer.split('').map(c => ANSWER_MAP[c.toUpperCase()] ?? 0).sort((a, b) => a - b);
+    } else {
+      // 单字母格式 "A" → 0
+      q.answer = ANSWER_MAP[q.answer.toUpperCase()] ?? 0;
+    }
   }
+
+  // type: 确保 type 字段正确
+  if (!q.type) {
+    q.type = Array.isArray(q.answer) ? 'multiple' : 'single';
+  }
+
   // explanation: 兼容 analysis 字段
   if (!q.explanation && q.analysis) {
     q.explanation = q.analysis;
@@ -77,7 +98,9 @@ async function init() {
       }
     }
     const questionResults = await Promise.all(questionFiles.map(f => loadJSON(f).catch(() => [])));
-    appData.questions = questionResults.flat().filter(Boolean).map(normalizeQuestion);
+    // 加载多选题/不定项选择题
+    const multiData = await loadJSON('./data/questions/multi_sample.json').catch(() => []);
+    appData.questions = [...questionResults.flat().filter(Boolean), ...(multiData || [])].map(normalizeQuestion);
 
     // 数据加载失败检查
     if (appData.subjects.length === 0) {
@@ -90,8 +113,9 @@ async function init() {
     // 初始化键盘快捷键
     initKeyboard();
 
-    // 渲染初始页面
-    switchPage('dashboard');
+    // 渲染初始页面（优先从 URL hash 恢复）
+    const initialPage = getPageFromHash() || 'dashboard';
+    switchPage(initialPage);
   } catch (err) {
     console.error('[法考通] 数据加载失败:', err);
     const container = $('#pageContent');
@@ -125,13 +149,43 @@ function bindNavigation() {
 
   // 移动端菜单按钮
   $('#menuToggle')?.addEventListener('click', () => {
-    $('#sidebar')?.classList.toggle('open');
+    const sidebar = $('#sidebar');
+    sidebar?.classList.toggle('open');
+  });
+
+  // 点击遮罩关闭侧边栏
+  $('#sidebarOverlay')?.addEventListener('click', () => {
+    $('#sidebar')?.classList.remove('open');
+  });
+
+  // Hash 路由监听
+  window.addEventListener('hashchange', () => {
+    const page = getPageFromHash();
+    if (page && page !== currentPage) {
+      switchPage(page, false); // false = 不再更新 hash（避免循环）
+    }
   });
 }
 
-function switchPage(page) {
+/**
+ * 从 URL hash 解析当前页面
+ * 格式: #/pageName
+ */
+function getPageFromHash() {
+  const hash = window.location.hash;
+  if (!hash || hash.length < 3) return null;
+  const page = hash.replace(/^#\/?/, '').split('?')[0];
+  return pages[page] ? page : null;
+}
+
+function switchPage(page, updateHash = true) {
   if (!pages[page]) return;
   currentPage = page;
+
+  // 更新 URL hash
+  if (updateHash) {
+    window.location.hash = `#/${page}`;
+  }
 
   // 更新侧边栏高亮
   $$('.nav-item').forEach(n => n.classList.remove('active'));

@@ -7,18 +7,21 @@
  * - 字体/图片: Cache First（长期缓存）
  */
 
-const CACHE_NAME = 'fakao-v3.1';
-const DATA_CACHE = 'fakao-data-v3.1';
+const CACHE_NAME = 'fakao-v3.2';
+const DATA_CACHE = 'fakao-data-v3.2';
 
 // 核心资源（安装时预缓存）
 const PRECACHE_URLS = [
   './',
   './index.html',
+  './manifest.json',
   './css/tokens.css',
   './css/layout.css',
   './css/components.css',
   './js/app.js',
   './js/state.js',
+  './js/exam-engine.js',
+  './js/recommend.js',
   './js/utils/dom.js',
   './js/utils/helpers.js',
   './js/utils/sm2.js',
@@ -31,6 +34,7 @@ const PRECACHE_URLS = [
   './js/pages/knowledge.js',
   './js/pages/laws.js',
   './js/pages/settings.js',
+  './js/pages/exam.js',
   './data/subjects.json',
 ];
 

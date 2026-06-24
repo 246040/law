@@ -25,15 +25,27 @@ const SHORTCUTS = {
     '2': () => clickButton('[data-level="ok"]'),
     '3': () => clickButton('[data-level="easy"]'),
   },
+  // 模拟考试
+  exam: {
+    'a': () => clickOption(0),
+    'b': () => clickOption(1),
+    'c': () => clickOption(2),
+    'd': () => clickOption(3),
+    'ArrowLeft': () => clickButton('#btnExamPrev'),
+    'ArrowRight': () => clickButton('#btnExamNext'),
+    'm': () => clickButton('#btnExamMark'),
+    'Enter': () => clickButton('#btnExamSubmitQ'),
+  },
   // 全局页面导航
   global: {
     '!1': () => window.switchPage?.('dashboard'),
     '!2': () => window.switchPage?.('practice'),
-    '!3': () => window.switchPage?.('flashcards'),
-    '!4': () => window.switchPage?.('mistakes'),
-    '!5': () => window.switchPage?.('knowledge'),
-    '!6': () => window.switchPage?.('laws'),
-    '!7': () => window.switchPage?.('settings'),
+    '!3': () => window.switchPage?.('exam'),
+    '!4': () => window.switchPage?.('flashcards'),
+    '!5': () => window.switchPage?.('mistakes'),
+    '!6': () => window.switchPage?.('knowledge'),
+    '!7': () => window.switchPage?.('laws'),
+    '!8': () => window.switchPage?.('settings'),
     '?': () => toggleHelp(),
   },
 };
@@ -63,7 +75,7 @@ function handleKeydown(e) {
   }
 
   // Alt+数字 = 页面导航
-  if (e.altKey && e.key >= '1' && e.key <= '7') {
+  if (e.altKey && e.key >= '1' && e.key <= '8') {
     e.preventDefault();
     const handler = SHORTCUTS.global[`!${e.key}`];
     if (handler) handler();
@@ -144,6 +156,18 @@ function toggleHelp() {
           </div>
           <div style="display:flex; justify-content:space-between;">
             <span>困难/还行/掌握</span><kbd style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">1 / 2 / 3</kbd>
+          </div>
+          <div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:8px 0;">
+            <strong>模拟考试</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>选择选项</span><kbd style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">A / B / C / D</kbd>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>上/下一题</span><kbd style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">← / →</kbd>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>标记当前题</span><kbd style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">M</kbd>
           </div>
           <div style="border-bottom:1px solid rgba(255,255,255,0.08); padding:8px 0;">
             <strong>全局导航</strong>

@@ -10,6 +10,8 @@ const DEFAULT_STATE = {
   cardStatus: {},
   subjectProgress: {},
   dailyLog: {},  // { 'YYYY-MM-DD': { answered: N, correct: N } }
+  streak: { current: 0, best: 0, lastDate: null },  // 连续学习天数
+  examHistory: [],  // 模考历史记录
 };
 
 export class Store {
